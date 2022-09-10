@@ -9,23 +9,30 @@ import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public class AppConfig { //배우가 상대 배우를 선택하는게 아니라, 담당자를 따로 두는 것
+@Configuration
+public class AppConfig {
 
-    //누가 선택되는지 깔끔하게 정리됨 (리팩토링)
-    private static MemberRepository memoryRepository() {
+    @Bean
+    public static MemberRepository memoryRepository() {
         return new MemoryMemberRepository();
     }
-    private static DiscountPolicy discountPolicy() {
+
+    @Bean
+    public static DiscountPolicy discountPolicy() {
         //return new FixDiscountPolicy();
         return new RateDiscountPolicy();
     }
 
+    @Bean
     public MemberService memberService(){
-        return new MemberServiceImpl(memoryRepository()); //생성자 주입, DI(의존관계 주입)
+        return new MemberServiceImpl(memoryRepository());
     }
 
-    public OrderService orderService(){ //배우의 역할에 사람이 캐스팅 되는 것과 비슷
+    @Bean
+    public OrderService orderService(){
         return new OrderServiceImpl(memoryRepository(), discountPolicy());
     }
 }
